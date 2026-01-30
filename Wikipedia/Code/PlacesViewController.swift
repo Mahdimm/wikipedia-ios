@@ -2087,6 +2087,21 @@ class PlacesViewController: ArticleLocationCollectionViewController, UISearchBar
         let searchResult = MWKSearchResult(articleID: 0, revID: 0, title: title, displayTitle: displayTitle, displayTitleHTML: displayTitleHTML, wikidataDescription: article.wikidataDescription, extract: article.snippet, thumbnailURL: article.thumbnailURL, index: nil, titleNamespace: nil, location: article.location)
         currentSearch = PlaceSearch(filter: .top, type: .location, origin: .user, sortStyle: .links, string: nil, region: region, localizedDescription: title, searchResult: searchResult, siteURL: articleURL.wmf_site)
     }
+    
+    /// Shows the Places map centered at the specified coordinates.
+    /// - Parameters:
+    ///   - latitude: The latitude coordinate (must be between -90 and 90)
+    ///   - longitude: The longitude coordinate (must be between -180 and 180)
+    @objc public func showCoordinate(latitude: Double, longitude: Double) {
+        guard view != nil else { 
+            return 
+        }
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let region = [coordinate].wmf_boundingRegion(with: 10000)
+        
+        mapRegion = region
+        performDefaultSearchIfNecessary(withRegion: region)
+    }
 
     fileprivate func searchForFirstSearchSuggestion() {
         if !searchSuggestionController.searches[PlaceSearchSuggestionController.completionSection].isEmpty {
